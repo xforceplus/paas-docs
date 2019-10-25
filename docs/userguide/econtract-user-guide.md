@@ -1,0 +1,277 @@
+# 电子合同服务用户手册
+
+## 引言
+
+### 编写目的
+
+为电子合同服务接入方开发人员提供一个规范化的接口协议，更方便地进行业务整合嵌入。
+
+### 背景
+
+本协议适用于电子合同服务与第三方接入平台间的行为、数据及事件的交互与传递。 本协议承载于 HTTP 协议，严格遵守 HTTP 协议规范。
+
+### 定义
+
+ECP：Electronic Contract Provider 电子合同服务提供商
+
+ESP：Electronic Seal Provider 电子签章服务提供商
+
+## 概述
+
+接入方平台需要首先[对接业务中台的运营网关](#参考资料)，否则无法在线上使用本服务。
+
+在使用本服务前，请向[业务中台](#联系方式)填写申请邮件接入，须提供接入方平台的app_id, tenant_id, company_id等。
+
+本平台当前默认使用“法大大”作为电子合同及电子签章服务提供商，如果您需要使用该服务提供商，请务必按照该供应商要求完成公司备案并获取三要素提供给我们，他们分别是：客户编号，接入ID，接入密钥；扩展信息有接入名、企业名称、税号等。
+
+当前不支持其他类型服务提供商。
+
+## 计费标准
+
+待补充
+
+## 接口清单
+参考[《电子合同服务接口样式》](econtract-api-guide.md)
+
+## 接入步骤
+
+### Jar包引入
+
+<!--DOCUSAURUS_CODE_TABS-->
+<!--XML-->
+```xml
+<dependency>
+    <groupId>com.xforceplus</groupId>
+    <artifactId>econtract-client</artifactId>
+    <version>1.0.0-SNAPSHOT</version>
+</dependency>
+```
+<!--END_DOCUSAURUS_CODE_TABS-->
+
+联调版本请使用1.0.0-SNAPSHOT，发布版本请使用1.0.0
+
+客户端包含了接口路径、响应状态码、请求参数模型、响应参数模型等，详见下图
+
+![客户端结构目录图](assets/econtract-client-code-structure.png)
+
+### 创建客户端
+
+<!--DOCUSAURUS_CODE_TABS-->
+<!--Java-->
+```java
+import com.xforceplus.tower.econtract.api.ContractApi;
+import com.xforceplus.tower.econtract.api.SealApi;
+
+// 外网访问
+// @FeignClient(name = "econtract-service", url = "http://econtract.phoenix-t.xforceplus.com")
+// 内网访问
+@FeignClient(name = "econtract-service:8080")
+public interface EContractClient extends ContractApi{}
+
+// 外网访问
+// @FeignClient(name = "econtract-service", url = "http://econtract.phoenix-t.xforceplus.com")
+// 内网访问
+@FeignClient(name = "econtract-service:8080")
+public interface ESealClient extends SealApi{}
+```
+<!--END_DOCUSAURUS_CODE_TABS-->
+
+ 或者 
+ 
+ 直接使用依赖中的EContractFeignClient和ESealFeignClient，同时请在您的服务中配置变量econtract.service.url
+ 
+### 接口对接开发
+
+#### 上传签章文字或图片
+
+* 请求参数构造样例
+<!--DOCUSAURUS_CODE_TABS-->
+<!--Java-->
+```
+Long appId = 1L;
+Long tenantId = 1L;
+Long companyId = 1L;
+SealUploadRequest sealUploadRequest = new SealUploadRequest();
+sealUploadRequest.setSealBody("XXXX投资公司");
+// sealUploadRequest.setSealImageBase64("XXCFSFSDFSDFSDFSDF");
+DefaultResponse<SealUploadResult> defaultResponse = sealClient.uploadSeal(tenantId,appId,companyId, sealUploadRequest);
+```
+<!--END_DOCUSAURUS_CODE_TABS-->
+
+* 响应参数解析样例
+<!--DOCUSAURUS_CODE_TABS-->
+<!--Java-->
+```
+if (defaultResponse.isSuccess()){
+    SealUploadResult sealUploadResult = defaultResponse.getResult();
+    String sealImageBase64 = sealUploadResult.getSealImageBase64();
+}
+```
+<!--END_DOCUSAURUS_CODE_TABS-->
+
+#### 创建合同
+
+* 请求参数构造样例
+<!--DOCUSAURUS_CODE_TABS-->
+<!--Java-->
+```
+Long appId = 1L;
+Long tenantId = 1L;
+Long companyId = 1L;
+String templateId = "abc";
+ContractCreationRequest contractCreationRequest = new ContractCreationRequest();
+contractCreationRequest.setContractTitle("XXX合同");
+contractCreationRequest.setTemplateId(templateId);
+contractCreationRequest.setFontSize("10");
+contractCreationRequest.setFontType("0");
+    
+Map<String, Object> parameterMap = new HashMap<>();
+parameterMap.put("姓名","张三");
+contractCreationRequest.setParameterMap(parameterMap);
+    
+DynamicTableFadadaImpl dynamicTable = new DynamicTableFadadaImpl();
+dynamicTable.setBorderFlag(true);
+dynamicTable.setData(new String[][]{{"123","123"}});
+List<String> tables = new ArrayList<>();
+tables.add(JSON.toJSONString(dynamicTable));
+contractCreationRequest.setDynamicTables(tables);
+    
+DefaultResponse<ContractCreationResult> defaultResponse = contractClient.createContract(tenantId,appId,companyId,contractCreationRequest);
+```
+<!--END_DOCUSAURUS_CODE_TABS-->
+
+* 响应参数解析样例
+<!--DOCUSAURUS_CODE_TABS-->
+<!--Java-->
+```
+if (defaultResponse.isSuccess()) {
+   TemplateUploadResult templateUploadResult = defaultResponse.getResult();
+   String templateId = templateUploadResult.getTemplateId();
+}
+```
+<!--END_DOCUSAURUS_CODE_TABS-->
+
+#### 上传合同模板
+
+* 请求参数构造样例
+<!--DOCUSAURUS_CODE_TABS-->
+<!--Java-->
+```
+Long appId = 1L;
+Long tenantId = 1L;
+Long companyId = 1L;
+MultipartFile multipartFile = null;
+DefaultResponse<TemplateUploadResult> defaultResponse = contractClient.uploadTemplate(tenantId, appId, companyId, multipartFile);
+```
+<!--END_DOCUSAURUS_CODE_TABS-->
+
+* 响应参数解析样例
+<!--DOCUSAURUS_CODE_TABS-->
+<!--Java-->
+```
+if (defaultResponse.isSuccess()) {
+   TemplateUploadResult templateUploadResult = defaultResponse.getResult();
+   String templateId = templateUploadResult.getTemplateId();
+}
+```
+<!--END_DOCUSAURUS_CODE_TABS-->
+
+#### 获取合同
+
+* 请求参数构造样例
+<!--DOCUSAURUS_CODE_TABS-->
+<!--Java-->
+```
+Long appId = 1L;
+Long tenantId = 1L;
+Long companyId = 1L;
+String contractId = "sdfsfdsfds";
+Boolean download = true;
+DefaultResponse<String> defaultResponse = contractClient.obtainContract(tenantId, contractId, appId, companyId, download);
+```
+<!--END_DOCUSAURUS_CODE_TABS-->
+
+* 响应参数解析样例
+<!--DOCUSAURUS_CODE_TABS-->
+<!--Java-->
+```
+if (defaultResponse.isSuccess()) {
+   String url = defaultResponse.getResult();
+}
+```
+<!--END_DOCUSAURUS_CODE_TABS-->
+
+#### 签署合同
+
+* 请求参数构造样例
+<!--DOCUSAURUS_CODE_TABS-->
+<!--Java-->
+```
+Long appId = 1L;
+Long tenantId = 1L;
+Long companyId = 1L;
+String contractId = "sdfsfdsfds";
+Boolean auto = true;
+ContractSignRequest contractSignRequest = new ContractSignRequest();
+contractSignRequest.setContractTitle("XXXXX投资合同");
+contractSignRequest.setSealId("fsfeewrfwe");
+contractSignRequest.setTransactionId("1234567");
+ContractSignParamFadadaImpl parameters = new ContractSignParamFadadaImpl();
+parameters.setSignKeyword("签章");
+parameters.setKeywordStrategy("123");
+Map<String, Object> parameterMap = BeanUtils.describe(parameters);;
+contractSignRequest.setParameters(parameterMap);
+DefaultResponse<ContractDefaultResult> defaultResponse = contractClient.signContract(tenantId, contractId, appId, companyId, auto, contractSignRequest);
+```
+<!--END_DOCUSAURUS_CODE_TABS-->
+
+* 响应参数解析样例
+<!--DOCUSAURUS_CODE_TABS-->
+<!--Java-->
+```
+if (defaultResponse.isSuccess()) {
+   ContractDefaultResult contractDefaultResult = defaultResponse.getResult();
+   String downloadUrl = contractDefaultResult.getDonwloadUrl();
+   String viewUrl = contractDefaultResult.getViewUrl();
+}
+```
+<!--END_DOCUSAURUS_CODE_TABS-->
+
+## 返回码清单
+
+|  code   | message | 描述 |
+|  :----  | :----  | :--- |
+| ELCCZZ0500  | 系统处理异常 | 往往会附带更多信息，重试多次后无法解决请联系管理员    |
+| ELCCZZ0200 | 请求成功 | 附加返回参数请参看result内容 |
+| ELCCZZ0400 | 请求参数错误 | 请求参数校验失败，请按提示修改后重新提交 |
+| ELCCZZ1001 | 第三方调用超时 | 第三方供应商服务调用超时，重试多次后无法解决请联系管理员 |
+| ELCCZZ1002 | 第三方调用异常 | 第三方供应商服务系统异常，重试多次后无法解决请联系管理员 |
+
+## 压测报告
+
+[《电子合同服务接口压测设计迭代20190815》](assets/econtract-test-report.pdf)
+
+## 联调环境
+
+详见[《服务下沉环境信息》](https://wiki.xforceplus.com/pages/viewpage.action?pageId=30025683)中FAT环境配置
+
+## 联系方式
+
+tower@xforceplus.com
+
+## 参考资料
+
+[《电子合同服务PRD》](https://wiki.xforceplus.com/pages/viewpage.action?pageId=33468272)
+
+[《电子合同服务ERD》](https://wiki.xforceplus.com/pages/viewpage.action?pageId=33471910)
+
+[《clientId+secret调用api》](https://wiki.xforceplus.com/pages/viewpage.action?pageId=33463073)
+
+## 附件
+[《使用Acrobat制作PDF模板说明.pdf》](http://localhost:3000/docs/doc1)
+
+[《产品服务合同测试样例.docx》](https://wiki.xforceplus.com/download/attachments/33472127/%E4%BA%A7%E5%93%81%E6%9C%8D%E5%8A%A1%E5%90%88%E5%90%8C%E6%B5%8B%E8%AF%95%E6%A0%B7%E4%BE%8B.docx?version=2&modificationDate=1566291241000&api=v2)
+
+[《产品服务合同测试样例.pdf》](https://wiki.xforceplus.com/download/attachments/33472127/%E4%BA%A7%E5%93%81%E6%9C%8D%E5%8A%A1%E5%90%88%E5%90%8C%E6%B5%8B%E8%AF%95%E6%A0%B7%E4%BE%8B.pdf?version=2&modificationDate=1566291246000&api=v2)
+
+[《电子合同测试数据.txt》](https://wiki.xforceplus.com/download/attachments/33472127/%E7%94%B5%E5%AD%90%E5%90%88%E5%90%8C%E6%B5%8B%E8%AF%95%E6%95%B0%E6%8D%AE.txt?version=2&modificationDate=1566291242000&api=v2)

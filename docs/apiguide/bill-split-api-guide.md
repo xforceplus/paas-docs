@@ -1,0 +1,506 @@
+# 拆票服务接口样式
+
+
+<a name="overview"></a>
+## 概览
+
+### 版本信息
+*版本* : 1.0.0
+
+
+### URI scheme
+*域名* : bill-split-fat.phoenix-t.xforceplus.com  
+*基础路径* : /
+
+
+### 标签
+
+* pre-invoice-generate-controller : Pre Invoice Generate Controller
+* synchronization-pre-invoice-generate-controller : Synchronization Pre Invoice Generate Controller
+
+
+
+
+<a name="paths"></a>
+## 路径
+
+<a name="sendsplitmsgusingpost_1"></a>
+### sendSplitMsg
+```
+POST /{tenantId}/invoice/v1/synchronization/pre-invoices
+```
+
+
+#### 参数
+
+|类型|名称|说明|类型|
+|---|---|---|---|
+|**Path**|**tenantId**  <br>*必填*|tenantId|integer (int64)|
+|**Body**|**createPreInvoiceParam**  <br>*必填*|createPreInvoiceParam|[CreatePreInvoiceParam](#createpreinvoiceparam)|
+
+
+#### 响应
+
+|HTTP代码|说明|类型|
+|---|---|---|
+|**200**|OK|[BaseResponse«List«SplitPreInvoiceInfo»»](#dc3ed9d46c24988ff809702715b1c995)|
+|**201**|Created|无内容|
+|**401**|Unauthorized|无内容|
+|**403**|Forbidden|无内容|
+|**404**|Not Found|无内容|
+
+
+#### 消耗
+
+* `application/json`
+
+
+#### 生成
+
+* `\*/*`
+
+
+#### 标签
+
+* synchronization-pre-invoice-generate-controller
+
+
+<a name="sendsplitmsgusingpost"></a>
+### 发送拆票请求
+```
+POST /{tenantId}/{appId}/invoice/v1/pre-invoices
+```
+
+
+#### 参数
+
+|类型|名称|说明|类型|
+|---|---|---|---|
+|**Path**|**appId**  <br>*必填*|产品线id|integer (int64)|
+|**Path**|**tenantId**  <br>*必填*|租户id|integer (int64)|
+|**Body**|**createPreInvoiceParam**  <br>*必填*|单据规则信息|[CreatePreInvoiceParam](#createpreinvoiceparam)|
+
+
+#### 响应
+
+|HTTP代码|说明|类型|
+|---|---|---|
+|**200**|OK|[BaseResponse«string»](#c2b8bd5459ac78f2e4e0011198c1a1d4)|
+|**201**|Created|无内容|
+|**401**|Unauthorized|无内容|
+|**403**|Forbidden|无内容|
+|**404**|Not Found|无内容|
+
+
+#### 消耗
+
+* `application/json`
+
+
+#### 生成
+
+* `application/json`
+
+
+#### 标签
+
+* pre-invoice-generate-controller
+
+
+
+
+<a name="definitions"></a>
+## 定义
+
+<a name="dc3ed9d46c24988ff809702715b1c995"></a>
+### BaseResponse«List«SplitPreInvoiceInfo»»
+
+|名称|类型|
+|---|---|
+|**code**  <br>*可选*|string|
+|**message**  <br>*可选*|string|
+|**result**  <br>*可选*|< [SplitPreInvoiceInfo](#splitpreinvoiceinfo) > array|
+
+
+<a name="c2b8bd5459ac78f2e4e0011198c1a1d4"></a>
+### BaseResponse«string»
+
+|名称|类型|
+|---|---|
+|**code**  <br>*可选*|string|
+|**message**  <br>*可选*|string|
+|**result**  <br>*可选*|string|
+
+
+<a name="billinfo"></a>
+### BillInfo
+
+|名称|说明|类型|
+|---|---|---|
+|**amountWithTax**  <br>*必填*|含税金额|number|
+|**amountWithoutTax**  <br>*必填*|不含税金额|number|
+|**batchNo**  <br>*可选*|批次号|integer (int64)|
+|**billItems**  <br>*必填*|单据明细|< [BillItem](#billitem) > array|
+|**businessBillType**  <br>*可选*|业务单据类型|string|
+|**cashierName**  <br>*可选*|收款人|string|
+|**checkerName**  <br>*可选*|复核人|string|
+|**customerNo**  <br>*可选*|用户Id 下发数据需要  由属地直接传过来|string|
+|**ext1**  <br>*可选*||string|
+|**ext10**  <br>*可选*||string|
+|**ext11**  <br>*可选*||string|
+|**ext12**  <br>*可选*||string|
+|**ext13**  <br>*可选*||string|
+|**ext14**  <br>*可选*||string|
+|**ext15**  <br>*可选*||string|
+|**ext16**  <br>*可选*||string|
+|**ext17**  <br>*可选*||string|
+|**ext18**  <br>*可选*||string|
+|**ext19**  <br>*可选*||string|
+|**ext2**  <br>*可选*||string|
+|**ext20**  <br>*可选*||string|
+|**ext21**  <br>*可选*||string|
+|**ext22**  <br>*可选*||string|
+|**ext23**  <br>*可选*||string|
+|**ext24**  <br>*可选*||string|
+|**ext25**  <br>*可选*||string|
+|**ext3**  <br>*可选*||string|
+|**ext4**  <br>*可选*||string|
+|**ext5**  <br>*可选*||string|
+|**ext6**  <br>*可选*||string|
+|**ext7**  <br>*可选*||string|
+|**ext8**  <br>*可选*||string|
+|**ext9**  <br>*可选*||string|
+|**importBatchNo**  <br>*可选*|导入批次号|string|
+|**invoiceType**  <br>*必填*|发票类型|string|
+|**invoicerName**  <br>*可选*|开票人|string|
+|**originInvoiceCode**  <br>*可选*|原发票代码|string|
+|**originInvoiceNo**  <br>*可选*|原发票号码|string|
+|**priceMethod**  <br>*必填*|价格方式|integer (int32)|
+|**purchaserAddress**  <br>*可选*|购方地址|string|
+|**purchaserBankAccount**  <br>*可选*|购方银行账号|string|
+|**purchaserBankName**  <br>*可选*|购方银行名称|string|
+|**purchaserGroupId**  <br>*可选*|购方租户id|integer (int64)|
+|**purchaserId**  <br>*可选*|购方id|integer (int64)|
+|**purchaserName**  <br>*可选*|购方名称|string|
+|**purchaserNo**  <br>*可选*|购方编号|string|
+|**purchaserTaxNo**  <br>*可选*|购方税号|string|
+|**purchaserTel**  <br>*可选*|购方电话|string|
+|**purchaserTenantId**  <br>*可选*|购方集团id|integer (int64)|
+|**receiveUserEmail**  <br>*可选*|接收人邮箱|string|
+|**receiveUserTel**  <br>*可选*|接收人电话|string|
+|**redNotificationNo**  <br>*可选*|红字信息表编号|string|
+|**remark**  <br>*可选*|业务单备注|string|
+|**salesbillId**  <br>*可选*|单据id|string|
+|**salesbillNo**  <br>*可选*|单据号|string|
+|**salesbillType**  <br>*可选*|单据类型|string|
+|**sellerAddress**  <br>*可选*|销方地址|string|
+|**sellerBankAccount**  <br>*可选*|销方银行账号|string|
+|**sellerBankName**  <br>*可选*|销方银行名称|string|
+|**sellerGroupId**  <br>*可选*|销方租户id|integer (int64)|
+|**sellerId**  <br>*可选*|销方id|integer (int64)|
+|**sellerName**  <br>*可选*|销方名称|string|
+|**sellerNo**  <br>*可选*|销方编号|string|
+|**sellerTaxNo**  <br>*可选*|销方税号|string|
+|**sellerTel**  <br>*可选*|销方电话|string|
+|**sellerTenantId**  <br>*可选*|销方集团id|integer (int64)|
+|**sysOrgId**  <br>*可选*|组织结构id|integer (int64)|
+|**systemOrig**  <br>*可选*|机构|string|
+|**taxAmount**  <br>*必填*|税额|number|
+
+
+<a name="billitem"></a>
+### BillItem
+
+|名称|说明|类型|
+|---|---|---|
+|**amountWithTax**  <br>*必填*|含税金额|number|
+|**amountWithoutTax**  <br>*必填*|不含税金额|number|
+|**deductions**  <br>*必填*|扣除额|number|
+|**discountTax**  <br>*可选*|折扣税额|number|
+|**discountWithTax**  <br>*可选*|折扣含税|number|
+|**discountWithoutTax**  <br>*可选*|折扣不含税|number|
+|**ext1**  <br>*可选*||string|
+|**ext10**  <br>*可选*||string|
+|**ext11**  <br>*可选*||string|
+|**ext12**  <br>*可选*||string|
+|**ext13**  <br>*可选*||string|
+|**ext14**  <br>*可选*||string|
+|**ext15**  <br>*可选*||string|
+|**ext16**  <br>*可选*||string|
+|**ext17**  <br>*可选*||string|
+|**ext18**  <br>*可选*||string|
+|**ext19**  <br>*可选*||string|
+|**ext2**  <br>*可选*||string|
+|**ext20**  <br>*可选*||string|
+|**ext3**  <br>*可选*||string|
+|**ext4**  <br>*可选*||string|
+|**ext5**  <br>*可选*||string|
+|**ext6**  <br>*可选*||string|
+|**ext7**  <br>*可选*||string|
+|**ext8**  <br>*可选*||string|
+|**ext9**  <br>*可选*||string|
+|**goodsNoVer**  <br>*可选*|编码版本号|string|
+|**goodsTaxNo**  <br>*可选*|税收分类编码|string|
+|**innerDiscountTax**  <br>*必填*|价内折扣含税|number|
+|**innerDiscountWithTax**  <br>*必填*|价内折扣含税|number|
+|**innerDiscountWithoutTax**  <br>*必填*|价内折扣不含税|number|
+|**innerPrepayAmountTax**  <br>*必填*|价内预付卡折扣税额|number|
+|**innerPrepayAmountWithTax**  <br>*必填*|价内预付卡折扣含税|number|
+|**innerPrepayAmountWithoutTax**  <br>*必填*|价内预付卡折扣不含税|number|
+|**itemCode**  <br>*可选*||string|
+|**itemName**  <br>*可选*||string|
+|**itemShortName**  <br>*可选*||string|
+|**itemSpec**  <br>*可选*||string|
+|**itemTypeCode**  <br>*可选*|分类码|string|
+|**largeCategoryName**  <br>*可选*|大类|string|
+|**medianCategoryName**  <br>*可选*|中类|string|
+|**orderDetailNo**  <br>*可选*||string|
+|**origin**  <br>*可选*||integer (int32)|
+|**originalAmountWithoutTax**  <br>*可选*||number|
+|**outterDiscountTax**  <br>*必填*|价外折扣税额|number|
+|**outterDiscountWithTax**  <br>*必填*|价外折扣含税|number|
+|**outterDiscountWithoutTax**  <br>*必填*|价外折扣不含税|number|
+|**outterPrepayAmountTax**  <br>*必填*|价外预付卡折扣税额|number|
+|**outterPrepayAmountWithTax**  <br>*必填*|价外预付卡折扣含税|number|
+|**outterPrepayAmountWithoutTax**  <br>*必填*|价外预付卡折扣不含税|number|
+|**quantity**  <br>*可选*|数量, 如果是null, 需转换成零|number|
+|**quantityUnit**  <br>*可选*|单位|string|
+|**redItem**  <br>*可选*|是否是红字明细  <br>**样例** : `false`|boolean|
+|**remark**  <br>*可选*|备注|string|
+|**salesbillId**  <br>*必填*|单据id|string|
+|**salesbillItemId**  <br>*必填*|单据明细id|string|
+|**salesbillItemNo**  <br>*可选*|明细号|string|
+|**salesbillNo**  <br>*可选*|单据号|string|
+|**smallCategoryName**  <br>*可选*|小类|string|
+|**splitCode**  <br>*可选*|拆分code, 0=成品油, 1=非成品油|string|
+|**splitItem**  <br>*可选*||boolean|
+|**taxAmount**  <br>*必填*|税额|number|
+|**taxPre**  <br>*可选*|是否享受税收优惠政策|string|
+|**taxPreCon**  <br>*可选*|是否享受税收优惠政策|string|
+|**taxRate**  <br>*必填*|税率|number|
+|**unitPrice**  <br>*可选*|单价, 如果是null, 需转换成零|number|
+|**zeroTax**  <br>*可选*|零税率标识|string|
+
+
+<a name="createpreinvoiceparam"></a>
+### CreatePreInvoiceParam
+
+|名称|说明|类型|
+|---|---|---|
+|**billInfo**  <br>*必填*|单据信息|[BillInfo](#billinfo)|
+|**routingKey**  <br>*必填*|路由key|string|
+|**rule**  <br>*必填*|规则信息|[SplitRule](#splitrule)|
+|**ruleCode**  <br>*可选*|规则code, 为空表示使用默认的|string|
+
+
+<a name="preinvoiceext"></a>
+### PreInvoiceExt
+*类型* : object
+
+
+<a name="preinvoiceitem"></a>
+### PreInvoiceItem
+
+|名称|说明|类型|
+|---|---|---|
+|**amountWithTax**  <br>*可选*|含税金额|number|
+|**amountWithoutTax**  <br>*可选*|不含税金额|number|
+|**cargoCode**  <br>*可选*|货物或应税劳务代码|string|
+|**cargoName**  <br>*可选*|货物或应税劳务名称|string|
+|**deduction**  <br>*可选*|扣除额|number|
+|**discountFlag**  <br>*可选*|扣除行标记|string|
+|**discountRate**  <br>*可选*|折扣率|number|
+|**discountTax**  <br>*可选*|折扣税额|number|
+|**discountWithTax**  <br>*可选*|折扣含税金额|number|
+|**discountWithoutTax**  <br>*可选*|折扣不含税金额|number|
+|**ext1**  <br>*可选*||string|
+|**ext10**  <br>*可选*||string|
+|**ext11**  <br>*可选*||string|
+|**ext12**  <br>*可选*||string|
+|**ext13**  <br>*可选*||string|
+|**ext14**  <br>*可选*||string|
+|**ext15**  <br>*可选*||string|
+|**ext16**  <br>*可选*||string|
+|**ext17**  <br>*可选*||string|
+|**ext18**  <br>*可选*||string|
+|**ext19**  <br>*可选*||string|
+|**ext2**  <br>*可选*||string|
+|**ext20**  <br>*可选*||string|
+|**ext3**  <br>*可选*||string|
+|**ext4**  <br>*可选*||string|
+|**ext5**  <br>*可选*||string|
+|**ext6**  <br>*可选*||string|
+|**ext7**  <br>*可选*||string|
+|**ext8**  <br>*可选*||string|
+|**ext9**  <br>*可选*||string|
+|**floatingAmount**  <br>*可选*|浮动金额(调整的容差金额)|number|
+|**goodsNoVer**  <br>*可选*|编码版本号|string|
+|**goodsTaxNo**  <br>*可选*|税收分类编码|string|
+|**innerDiscountTax**  <br>*可选*||number|
+|**innerDiscountWithTax**  <br>*可选*||number|
+|**innerDiscountWithoutTax**  <br>*可选*||number|
+|**innerPrepayAmountTax**  <br>*可选*||number|
+|**innerPrepayAmountWithTax**  <br>*可选*||number|
+|**innerPrepayAmountWithoutTax**  <br>*可选*||number|
+|**itemSpec**  <br>*可选*|规格型号|string|
+|**itemTypeCode**  <br>*可选*|分类码|string|
+|**origin**  <br>*可选*||integer (int32)|
+|**outterDiscountTax**  <br>*可选*||number|
+|**outterDiscountWithTax**  <br>*可选*||number|
+|**outterDiscountWithoutTax**  <br>*可选*||number|
+|**outterPrepayAmountTax**  <br>*可选*||number|
+|**outterPrepayAmountWithTax**  <br>*可选*||number|
+|**outterPrepayAmountWithoutTax**  <br>*可选*||number|
+|**preInvoiceId**  <br>*可选*|预制发票id|integer (int64)|
+|**priceMethod**  <br>*可选*|价格方式|string|
+|**printContentFlag**  <br>*可选*|是否打印单价数量|string|
+|**quantity**  <br>*可选*|数量|number|
+|**quantityUnit**  <br>*可选*|单位|string|
+|**salesbillId**  <br>*可选*||string|
+|**salesbillItemId**  <br>*可选*||string|
+|**salesbillItemNo**  <br>*可选*||string|
+|**salesbillNo**  <br>*可选*||string|
+|**taxAmount**  <br>*可选*|税额|number|
+|**taxItem**  <br>*可选*|商品税目|string|
+|**taxPre**  <br>*可选*|是否享受税收优惠政策|string|
+|**taxPreCon**  <br>*可选*|是否享受税收优惠政策|string|
+|**taxRate**  <br>*可选*|税率|number|
+|**unitPrice**  <br>*可选*|单价不含税|number|
+|**zeroTax**  <br>*可选*|零税率标识|string|
+
+
+<a name="preinvoicemain"></a>
+### PreInvoiceMain
+
+|名称|说明|类型|
+|---|---|---|
+|**amountWithTax**  <br>*可选*|价税合计|number|
+|**amountWithoutTax**  <br>*可选*|不含税金额|number|
+|**batchNo**  <br>*可选*|批次号|integer (int64)|
+|**businessBillType**  <br>*可选*|业务单据类型|string|
+|**cashierName**  <br>*可选*|收款人|string|
+|**checkCode**  <br>*可选*|校验码|string|
+|**checkerName**  <br>*可选*|复核人|string|
+|**createUserId**  <br>*可选*|更新用户id|string|
+|**customerNo**  <br>*可选*|用户Id 下发数据需要  由属地直接传过来|string|
+|**displayPriceQuality**  <br>*可选*|打印内容标志 (0-打印单价和数量, 1-不打印单价和数量)  <br>**最小值** : `-128`  <br>**最大值** : `127`|integer (int32)|
+|**electronicSignature**  <br>*可选*|电子签章|string|
+|**ext1**  <br>*可选*||string|
+|**ext10**  <br>*可选*||string|
+|**ext11**  <br>*可选*||string|
+|**ext12**  <br>*可选*||string|
+|**ext13**  <br>*可选*||string|
+|**ext14**  <br>*可选*||string|
+|**ext15**  <br>*可选*||string|
+|**ext16**  <br>*可选*||string|
+|**ext17**  <br>*可选*||string|
+|**ext18**  <br>*可选*||string|
+|**ext19**  <br>*可选*||string|
+|**ext2**  <br>*可选*||string|
+|**ext20**  <br>*可选*||string|
+|**ext21**  <br>*可选*||string|
+|**ext22**  <br>*可选*||string|
+|**ext23**  <br>*可选*||string|
+|**ext24**  <br>*可选*||string|
+|**ext25**  <br>*可选*||string|
+|**ext3**  <br>*可选*||string|
+|**ext4**  <br>*可选*||string|
+|**ext5**  <br>*可选*||string|
+|**ext6**  <br>*可选*||string|
+|**ext7**  <br>*可选*||string|
+|**ext8**  <br>*可选*||string|
+|**ext9**  <br>*可选*||string|
+|**invoiceCode**  <br>*可选*|发票代码|string|
+|**invoiceNo**  <br>*可选*|发票号码|string|
+|**invoiceSignature**  <br>*可选*|发票签名 用于抽取匹配|string|
+|**invoiceType**  <br>*可选*|发票类型|string|
+|**invoicerName**  <br>*可选*|开票人|string|
+|**listGoodsName**  <br>*可选*|销货清单备注|string|
+|**machineCode**  <br>*可选*|机器编码|string|
+|**originInvoiceCode**  <br>*可选*|原发票代码|string|
+|**originInvoiceNo**  <br>*可选*|原发票号码|string|
+|**outBatchNo**  <br>*可选*|系统外批次号|integer (int64)|
+|**paperDrawDate**  <br>*可选*|开票日期|string|
+|**purchaserAddress**  <br>*可选*|购方地址|string|
+|**purchaserBankAccount**  <br>*可选*|购方银行账号|string|
+|**purchaserBankName**  <br>*可选*|购方开户行|string|
+|**purchaserGroupId**  <br>*可选*|购方租户id|integer (int64)|
+|**purchaserId**  <br>*可选*|购方公司id|integer (int64)|
+|**purchaserName**  <br>*可选*|购方名称|string|
+|**purchaserNo**  <br>*可选*|购方编号|string|
+|**purchaserTaxNo**  <br>*可选*|购方税号|string|
+|**purchaserTel**  <br>*可选*|购方电话|string|
+|**purchaserTenantId**  <br>*可选*|购方集团id|integer (int64)|
+|**receiveUserEmail**  <br>*可选*|接收方邮箱|string|
+|**receiveUserTel**  <br>*可选*|接收方电话|string|
+|**redNotificationNo**  <br>*可选*|红字信息表编号|string|
+|**remark**  <br>*可选*|备注|string|
+|**ruleId**  <br>*可选*|规则id|integer (int64)|
+|**saleListFileFlag**  <br>*可选*|销货清单文件打印标志 (0-否, 1-是)  <br>**最小值** : `-128`  <br>**最大值** : `127`|integer (int32)|
+|**salesbillType**  <br>*可选*|单据类型|string|
+|**sellerAddress**  <br>*可选*|销方地址|string|
+|**sellerBankAccount**  <br>*可选*|销方银行账号|string|
+|**sellerBankName**  <br>*可选*|销方开户行|string|
+|**sellerGroupId**  <br>*可选*|销方租户id|integer (int64)|
+|**sellerId**  <br>*可选*|销方公司id|integer (int64)|
+|**sellerName**  <br>*可选*|销方名称|string|
+|**sellerNo**  <br>*可选*|销方编号|string|
+|**sellerTaxNo**  <br>*可选*|销方税号|string|
+|**sellerTel**  <br>*可选*|销方电话|string|
+|**sellerTenantId**  <br>*可选*|销方集团id|integer (int64)|
+|**specialInvoiceFlag**  <br>*可选*|特殊发票标记  0-默认  1-通行费   2-成品油|string|
+|**sysOrgId**  <br>*可选*|组织机构id|integer (int64)|
+|**systemOrig**  <br>*可选*|系统来源  下发数据需要  由属地直接传过来|string|
+|**taxAmount**  <br>*可选*|税额|number|
+|**taxRate**  <br>*可选*|税率，明细税率去重后逗号分隔|string|
+|**templateVersion**  <br>*可选*|版式文件版本 (0-使用5行模版, 1-使用8行模版)(仅服务器开电票使用)  <br>**最小值** : `-128`  <br>**最大值** : `127`|integer (int32)|
+
+
+<a name="remarkfieldmetadata"></a>
+### RemarkFieldMetadata
+
+|名称|说明|类型|
+|---|---|---|
+|**fieldDisplayName**  <br>*可选*|字段含义|string|
+|**fieldGroupIndex**  <br>*可选*|字段分组索引 0-单据主信息 1-单据明细|integer (int32)|
+|**fieldName**  <br>*可选*|字段名称|string|
+
+
+<a name="splitpreinvoiceinfo"></a>
+### SplitPreInvoiceInfo
+
+|名称|说明|类型|
+|---|---|---|
+|**preInvoiceExt**  <br>*可选*|预制发票扩展信息|[PreInvoiceExt](#preinvoiceext)|
+|**preInvoiceItems**  <br>*可选*|预制发票明细信息|< [PreInvoiceItem](#preinvoiceitem) > array|
+|**preInvoiceMain**  <br>*可选*|预制发票主信息|[PreInvoiceMain](#preinvoicemain)|
+|**ruleId**  <br>*可选*|拆分规则id|string|
+
+
+<a name="splitrule"></a>
+### SplitRule
+
+|名称|说明|类型|
+|---|---|---|
+|**amountSplitRule**  <br>*必填*||string|
+|**customRemarkSize**  <br>*可选*|自定义备注长度 默认168，电票默认130|integer (int32)|
+|**extRemark**  <br>*可选*|补充备注|string|
+|**fixedRemarkText**  <br>*可选*|固定备注内容|string|
+|**invoiceItemMaxRow**  <br>*可选*|发票票面明细最大数|integer (int32)|
+|**invoiceLimit**  <br>*必填*||number|
+|**invoiceSpec**  <br>*可选*|发票规格|string|
+|**invoiceType**  <br>*可选*|发票类型|string|
+|**itemSort**  <br>*必填*||string|
+|**priceMethod**  <br>*可选*||enum (WITHOUT_TAX, WITH_TAX)|
+|**remarkFiledMetadataBeanList**  <br>*可选*|备注列表元数据|< [RemarkFieldMetadata](#remarkfieldmetadata) > array|
+|**ruleId**  <br>*必填*||integer (int64)|
+|**saleListOption**  <br>*必填*||string|
+|**salesListMaxRow**  <br>*可选*|销货清单最大行数|integer (int32)|
+|**splitFiledList**  <br>*可选*|自定义拆票字段|< string > array|
+|**unitPriceAmountOps**  <br>*可选*|单价数量选项 0-打印单价数量 1-不打印单价数量|string|
+|**zeroTaxOption**  <br>*必填*|零税率发票类型, 0 = 不处理，1=专改普|enum (NOT_PROCESS, PROCESS)|
+
+
+
+
+

@@ -1,0 +1,141 @@
+# 邮件短信验证码用户手册
+
+## 引言
+
+### 编写目的
+
+为短信邮件服务接入方开发人员提供一个规范化的接口协议，更方便地进行业务整合嵌入。
+
+### 背景
+
+本协议适用于短信邮件服务与第三方接入平台间的行为、数据及事件的交互与传递。 本协议承载于 HTTP 协议，严格遵守 HTTP 协议规范。
+
+### 定义
+
+## 概述
+
+接入方平台需要首先对接业务中台的运营网关（参考[《clientId+secret调用api》](https://wiki.xforceplus.com/pages/viewpage.action?pageId=33463073)），否则无法在线上使用本服务。
+
+为了方便，联调环境可以（绕开运营网关）直接调用本服务接口。
+
+在使用本服务前，请向业务中台（tower@xforceplus.com）填写申请邮件接入，须提供接入方平台的app_id, tenant_id, company_id等。
+
+## 产品简介 
+
+### 什么是邮件短信服务
+
+邮件短信服务是由服务下沉团队提供的将邮件推送（DirectMail）和短信服务（Short Message Service）整合的一体化消息服务。
+
+邮件推送是一款简单高效的电子邮件发送服务，它构建在可靠稳定的云平台基础之上，帮助您快速、精准地实现事务邮件、通知邮件和批量邮件的发送。
+
+短信服务是为用户提供的一种通信服务的能力，支持向国内和国际快速发送验证码、短信通知和推广短信，服务范围覆盖全球200多个国家和地区。国内短信支持三网合一专属通道，与工信部携号转网平台实时互联。电信级运维保障，实时监控自动切换，到达率高达99%。完美支撑双11期间20亿短信发送，6亿用户触达。
+
+### 产品优势
+
++ 统一化的邮件推送及短信服务功能接口
++ 支持自定义邮件服务器及属地化部署
++ 单Pod支持最少1000并发量
++ 支持按使用量弹性伸缩扩展
++ 按量付费，并提供折扣价套餐
+
+### 产品功能
+由服务下沉团队透明化处理短信和邮件供应商的合作，实现统一的转发和配置。主要支持邮件和短信两种格式，行业线可以针对租户配置短信验证码和邮件模板和参数，实现发送消息的功能。
++ 支持配置邮件及短信模板
++ 支持配置短信邮件的通道
++ 支持HTML及TEXT格式邮件内容
++ 支持短信/邮件验证码发送及校验
++ 支持短信/邮件发送状态查询
++ 支持短信/邮件重发
+
+## 产品定价
+
+### 计费方式
+
+|  产品  |产品类型 |定价维度 | 定价 |
+|  :----  | :----  |:---- |:---- |
+| 消息通知服务 |短信通知及验证码 | 单价|	0.05元/条| 
+| 消息通知服务 |短信通知及验证码 | 套餐 |10,000元/220,000条(9折)、20,000元/500,000条(8折)|
+| 消息通知服务 |邮件推送及验证码 | 单价|	0.002元/封| 
+| 消息通知服务 |邮件推送及验证码 | 套餐 |90元/50,000封(9折)、850元/500,000封(8.5折)、1,600元/1,000,000封(8折)|
+| 消息通知服务  | 说明 | |提供测试环境免费试用，短信及邮件共提供100条试用，超过则按照计费标准收费；计费原则：发送成功则计费，发送失败不计费；所有套餐包时长为6个月。超出6个月之后按照单价计费。|
+
+### 赔付方案
+
+如服务可用性低于98%，可按照下表中的标准获得赔偿，且赔偿总额不超过在未达到服务可用性承诺期间内的客户实际支付的服务费。
+赔偿的服务费作为一下计费周期的费用抵扣。
+
+|  服务可用性  | 赔偿金额 | 
+|  :----  | :----  |
+| 低于99%但等于或高于98%  | 10%|
+| 低于98%但高于或等于95% | 20% |
+| 低于95% | 30% |
+
+## 接口清单
+### 1.Jar包引入
+
+<!--DOCUSAURUS_CODE_TABS-->
+<!--pom-->
+```pom
+<dependency>
+    <groupId>com.xcloud</groupId>
+    <artifactId>message-center-api</artifactId>
+    <version>1.0-SNAPSHOT</version>
+</dependency>
+```
+<!--END_DOCUSAURUS_CODE_TABS-->
+
+### 2.创建客户端
+应用编写client接口类，继承xxxApi,并使用@FeignClient注解标识，调用消息中心邮件服务示例代码如下
+<!--DOCUSAURUS_CODE_TABS-->
+<!--Java-->
+```java
+/**
+ * 编写client,继承Api类
+ */
+@FeignClient(value = "message-center-server")
+public interface EmailContentClient extends EmailContentApi{
+    
+}
+
+/**
+ * 注入刚编写的client,调用client方法即可
+ */
+@Autowired
+private EmailContentClient emailContentClient;
+
+public void test() {
+    EmailContentReq emailContent = new EmailContentReq();
+ emailContent.setContent("内容");
+ emailContent.setEmail("邮箱");
+ emailContent.setSubject("主题");
+ emailContentClient.send("tenantId", emailContent);
+}
+```
+<!--END_DOCUSAURUS_CODE_TABS-->
+
+### 返回码清单
+|  code  | message | 描述 | 
+|  :----  | :----  |:----|
+|0 | 失败 | 附加返回参数请参看result内容 |
+| 1 | 成功 | 附加返回参数请参看result内容 |
+
+## 压测报告
+
+[《邮件短信服务接口压测设计迭代20190830》](assets/message-email-test-report.pdf)
+
+## 联调环境
+
+详见[《服务下沉环境信息》](https://wiki.xforceplus.com/pages/viewpage.action?pageId=30025683)中FAT环境配置
+[短信模板](https://wiki.xforceplus.com/pages/viewpage.action?pageId=33467775)
+[短信模板](https://wiki.xforceplus.com/pages/viewpage.action?pageId=33467773)
+
+## 参考资料
+
+[《电子合同服务PRD》](https://wiki.xforceplus.com/pages/viewpage.action?pageId=33459604)
+
+[《电子合同服务ERD》](https://wiki.xforceplus.com/pages/viewpage.action?pageId=32112765)
+
+
+
+## 联系方式
+tower@xforceplus.com

@@ -1,0 +1,198 @@
+# 通知服务用户手册
+
+## 引言
+
+### 编写目的
+
+为通知服务开发人员提供一个规范化的接口协议，更方便地进行业务整合嵌入。
+
+### 背景
+
+本协议适用于通知服务与第三方接入平台间的行为、数据及事件的交互与传递。 本协议承载于 HTTP 协议，严格遵守 HTTP 协议规范。
+
+### 定义
+
+待补充
+
+## 概述
+
+接入方平台需要首先对接业务中台的运营网关（参考《clientId+secret调用api》），否则无法在线上使用本服务。
+
+为了方便，联调环境可以（绕开运营网关）直接调用本服务接口。
+
+在使用本服务前，请向业务中台（tower@xforceplus.com）填写申请邮件接入，须提供接入方平台的app_id, tenant_id, company_id等。
+
+## 产品简介 
+
+### 什么是通知服务
+
+通知服务为中台开发的消息提醒类应用，客户可使用通知服务轻易实现系统中的点对点，系统对个人等相关通知需求
+
+### 产品优势
+
++ 简化系统消息提醒等相关需求开发工作量
++ 支持按使用量弹性伸缩扩展
++ 性能优异, 单节点可支持1000qps
++ 按量付费，并提供折扣价套餐
++ 消息低延迟触达用户
+
+### 产品功能
+为各业务团队提供消息通知功能，主要功能点
++ 支持按产品线租户个人维度发送消息
++ 支持历史消息查询
++ 支持消息状态变更
+
+## 产品定价
+
+### 计费方式
+
+|  产品  | 定价维度 | 定价 |
+|  :----  | :----  |:---- |
+| 消息通知服务  | 单价|0.002元/次| 
+| 消息通知服务 | 套餐 |100元/50,000次，1,000元/550,000次(9折)、10,000元/5,800,000次、100,000元/25,000,000次|
+| 消息通知服务  | 优惠政策 |公司内部产品线接入前三位，按照所购套餐价8折计费，且提供免费资深工程师咨询服务，并协助接入；|
+
+
+### 赔付方案
+
+如服务可用性低于98%，可按照下表中的标准获得赔偿，且赔偿总额不超过在未达到服务可用性承诺期间内的客户实际支付的服务费。
+赔偿的服务费作为一下计费周期的费用抵扣。
+
+|  服务可用性  | 赔偿金额 | 
+|  :----  | :----  |
+| 低于99%但等于或高于98%  | 10%|
+| 低于98%但高于或等于95% | 20% |
+| 低于95% | 30% |
+
+## 接口清单
+请访问 http://172.18.10.212:3000/ 并注册，通知管理员（tower@xforceplus.com）授予权限即可见。
+
+
+## 接入步骤
+### 1.Jar包引入
+
+<!--DOCUSAURUS_CODE_TABS-->
+<!--XML-->
+```xml
+<dependency>
+    <groupId>xf-bm-xplat-msg</groupId>
+	<artifactId>notification-service</artifactId>
+    <version>1.0-SNAPSHOT</version>
+</dependency>
+```
+**联调版本请使用1.0-SNAPSHOT，发布版本请使用1.0.0**
+
+
+### 2.创建客户端
+应用编写client接口类，继承xxxApi,并使用@FeignClient注解标识，调用消息中心邮件服务示例代码如下
+<!--DOCUSAURUS_CODE_TABS-->
+<!--Java-->
+```java
+// 外网访问
+// @FeignClient(name = "notification-service", url = "http://nofitication-fat-svc.phoenix-t.xforceplus.com")
+// 内网访问
+@FeignClient(name = "notification-service:8080")
+public interface MessageClient extends MessageApi{}
+```
+<!--END_DOCUSAURUS_CODE_TABS-->
+
+### 3.接口对接开发
+
+**轮询是否有新消息**
+
+**请求参数构造样例**
+<!--DOCUSAURUS_CODE_TABS-->
+<!--Java-->
+```java
+long appId = 0;
+long tenantId = 0;
+long lastMsgId = 10;
+QueryType queryType = QueryType.SINGLE;
+BaseResponse<Boolean> response = messageClient.queryHasNewMsg(appId, tenantId, lastMsgId, queryType);
+```
+<!--END_DOCUSAURUS_CODE_TABS-->
+
+**发送新消息**
+
+**请求参数构造样例**
+<!--DOCUSAURUS_CODE_TABS-->
+<!--Java-->
+```java
+long tenantId = 0;
+MessageInfo messageInfo = new MessageInfo();
+messageClient.sendMessage(messageInfo, tenantId);
+```
+<!--END_DOCUSAURUS_CODE_TABS-->
+
+**查询消息列表**
+
+**请求参数构造样例**
+<!--DOCUSAURUS_CODE_TABS-->
+<!--Java-->
+```java
+QueryType queryType = QueryType.SINGLE;
+long tenantId = 0;
+long appId = 0;
+String tag = "消息标签";
+String sortBy = "排序字段";
+int pageNo = 1;
+int pageSize = 10;
+BaseResponse<MessagePage> baseResponse = messageClient.queryMessages(appId, tenantId, queryType, tag, sortBy, pageNo, pageSize);
+```
+<!--END_DOCUSAURUS_CODE_TABS-->
+
+**更新消息为已读状态**
+
+**请求参数构造样例**
+<!--DOCUSAURUS_CODE_TABS-->
+<!--Java-->
+```java
+long tenantId = 0;
+long messageId = 0;
+BaseResponse baseResponse = messageClient.reStatus(messageId, tenantId);
+```
+<!--END_DOCUSAURUS_CODE_TABS-->
+
+**查询消息详情**
+
+**请求参数构造样例**
+<!--DOCUSAURUS_CODE_TABS-->
+<!--Java-->
+```java
+long tenantId = 0;
+long messageId = 0;
+BaseResponse<MessageDetail> baseResponse = messageClient.queryMessage(messageId, tenantId);
+```
+<!--END_DOCUSAURUS_CODE_TABS-->
+
+
+
+### 返回码清单
+
+|  code   | 说明 | 
+|  :----  |:----|
+|NTCTZZ0001 |  成功 |
+| NTCTZZ0400 |  接口参数不合法 |
+| NTCTZZ0401 | 获取登录用户失败|
+| NTCTZZ0404 |  记录不存在 |
+| NTCTZZ0500 |  系统错误 |
+
+
+## 压测报告
+
+[《通知服务接口压测设计20190614》](assets/inform-test-report.pdf)
+
+## 联调环境
+
+详见[《服务下沉环境信息》](https://wiki.xforceplus.com/pages/viewpage.action?pageId=30025683)中FAT环境配置
+
+## 参考资料
+
+[《通知服务PRD》](https://wiki.xforceplus.com/pages/viewpage.action?pageId=30021044)
+
+[《通知服务ERD》](https://wiki.xforceplus.com/pages/viewpage.action?pageId=30027491)
+
+
+
+## 联系方式
+tower@xforceplus.com

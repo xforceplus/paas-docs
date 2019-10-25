@@ -1,0 +1,125 @@
+# 文件存储用户手册
+
+## 引言
+
+### 编写目的
+
+为物流服务接入方开发人员提供一个规范化的接口协议，更方便地进行业务整合嵌入。
+
+### 背景
+
+本协议适用于文件存储服务与第三方接入平台间的行为、数据及事件的交互与传递。 本协议承载于 HTTP 协议，严格遵守 HTTP 协议规范。
+### 定义
+
+## 概述
+
+接入方平台需要首先对接业务中台的运营网关（参考《clientId+secret调用api》），否则无法在线上使用本服务。
+为了方便，联调环境可以（绕开运营网关）直接调用本服务接口。
+在使用本服务前，请向业务中台（tower@xforceplus.com）填写申请邮件接入，须提供接入方平台的app_id, tenant_id, company_id等。
+
+## 产品简介 
+
+### 什么是物流服务
+
+物流服务是由服务下沉团队提供的将快递在线下单、电子面单及物流轨迹跟踪的服务。
+
+物流服务是为用户提供的一种方便快递的在线下单，支持顺丰、四通一达等主要物流供应商。
+
+### 产品优势
+
++ 统一化的物流服务功能接口
++ 支持自定义物流服务器及属地化部署
++ 单Pod支持最少1000并发量
++ 支持按使用量弹性伸缩扩展
++ 按量付费，并提供折扣价套餐
+
+### 产品功能
+
+由服务下沉团队透明化处理物流供应商的合作，实现统一的下单和配置。
+
++ 支持预约取件
++ 支持电子面单及打印
++ 支持轨迹订阅
++ 支持物流轨迹的推送
+
+## 产品定价
+
+### 计费方式
+
+待补充
+
+### 赔付方案
+
+待补充
+
+## 接口清单
+
+请访问 http://172.18.10.212:3000/ 并注册，通知管理员（tower@xforceplus.com）授予权限即可见。
+物流服务接口请参考 http://172.18.10.212:3000/project/110/interface/api/cat_720
+
+## 接入步骤
+### 1.Jar包引入
+<!--DOCUSAURUS_CODE_TABS-->
+<!--pom-->
+```pom
+<dependency>
+    <groupId>com.xforceplus</groupId>
+    <artifactId>logistics-api</artifactId>
+    <version>1.0-SNAPSHOT</version>
+</dependency>
+```
+<!--END_DOCUSAURUS_CODE_TABS-->
+
+### 2.创建客户端
+应用编写client接口类，继承xxxApi,并使用@FeignClient注解标识，调用消息中心邮件服务示例代码如下
+<!--DOCUSAURUS_CODE_TABS-->
+<!--java-->
+```java
+/**
+ * 编写client,继承Api类
+ */
+@FeignClient(value = "logistics-server")
+public interface LogisticsClient extends LogisticsServiceApi{
+}
+
+/**
+ * 注入刚编写的client,调用client方法即可
+ */
+@Autowired
+private LogisticsClient logisticsClient;
+
+public void test() {
+    OrderReq orderReq = new OrderReq();
+ orderReq.setOrderCode("HF201909290001");
+ orderReq.setSenderName("王大强");
+ eorderReq.setSenderTel("13612345678");
+ ......
+ logisticsClient.addEOrder("tenantId", "companyId","appId",orderReq);
+}
+```
+<!--END_DOCUSAURUS_CODE_TABS-->
+
+### 返回码清单
+|  code  | message | 描述 | 
+|  :----  | :----  |:----|
+|LGSTZZ0200| 请求成功 | 附加返回参数请参看result内容 |
+| LGSTZZ0400 | 请求参数错误 | 请求参数校验失败，请按提示修改后重新提交 |
+| LGSTZZ0401 | 非法用户 | 重试多次后无法解决请联系管理员 |
+| LGSTZZ0500 | 服务器出现异常 | 重试多次后无法解决请联系管理员 |
+| LGSTZZ1001 | 第三方调用超时 | 重试多次后无法解决请联系管理员 |
+| LGSTZZ1002 | 第三方调用异常 | 重试多次后无法解决请联系管理员 |
+| LGSTZZ1003 | 请求第三方返回错误 | 重试多次后无法解决请联系管理员 |
+| LGSTZZ1004 | 订单编号重复 | 订单编号 OrderCode 唯一索引，请更新订单编号 |
+| LGSTZZ1005 | 订单保存失败 | 根据请求重试多次后无法解决请联系管理员 |
+| CPTNCB0001 | 回调接收成功 | 回调服务返回代码 |
+
+## 压测报告
+
+[《电子合同服务接口压测设计迭代20190815》](assets/message-email-test-report.pdf)
+
+## 联调环境
+
+详见[《服务下沉环境信息》](https://wiki.xforceplus.com/pages/viewpage.action?pageId=30025683)中FAT环境配置
+
+## 联系方式
+tower@xforceplus.com

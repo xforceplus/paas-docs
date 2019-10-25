@@ -1,0 +1,182 @@
+# 数据转换用户手册
+
+## 引言
+
+### 编写目的
+为数据转换接入方开发人员提供一个规范化的接口协议，更方便地进行业务整合嵌入。
+
+### 背景
+
+本协议适用于数据转换与第三方接入平台间的行为、数据及事件的交互与传递。 本协议承载于 HTTP 协议，严格遵守 HTTP 协议规范。
+
+### 定义
+
+## 概述
+1、Excel转换为Json：
+ExcelConvertFactory.excelToJson
+
+参数：
+<!--DOCUSAURUS_CODE_TABS-->
+<!--Java-->
+```java
+MultipartFile file; //所要转换的excel，格式只能为  .xls,.xlsx 
+String json;  //转换的结果数据json模版，json中所有的key对应的value必须满足，${xxx} 格式，具体样例可见下文样例
+Integer startSheet = 1; //开始读取excel的sheetNo，默认值为1，不能小于等于 0
+Integer startRow = 1;   //开始读取excel的行，默认值为1，不能小于等于 0
+```
+<!--END_DOCUSAURUS_CODE_TABS-->
+
+2、Json转换为Excel：
+ExcelConvertFactory.jsonToExcel
+
+参数：
+<!--DOCUSAURUS_CODE_TABS-->
+<!--Java-->
+```java
+[
+String json; //需要转化的json
+Map<String ,String> rules; // map类型，key为数据库对应字段，value为表头汉字
+String sheetName; // sheet的名称，默认会从sheet1开始
+],
+String fileName; //生成的excel名称，不能为空
+此接口可传多个以上对象，一个以上对象，对应Excel里面的一个sheet
+```
+<!--END_DOCUSAURUS_CODE_TABS-->
+
+3、所有错误会以异常形式抛出
+
+
+## 产品简介 
+
+### 什么是数据转换服务
+提供各种数据与文件转换的功能
+
+### 产品优势
+待补充
+
+### 产品功能
+待补充
+
+## 产品定价
+待补充
+
+
+### 计费方式
+待补充
+
+
+### 赔付方案
+待补充
+
+## 接口步骤
+### 1.Jar包引入
+
+<!--DOCUSAURUS_CODE_TABS-->
+<!--pom-->
+```pom
+<dependency>
+	<artifactId>tower-sdk-convert</artifactId>
+	<groupId>com.xforceplus.tower</groupId>
+	<version>1.0.2-SNAPSHOT</version>
+</dependency>
+```
+<!--END_DOCUSAURUS_CODE_TABS-->
+
+### 2.创建客户端
+应用编写client接口类，继承xxxApi,并使用@FeignClient注解标识，调用消息中心邮件服务示例代码如下
+<!--DOCUSAURUS_CODE_TABS-->
+<!--Java-->
+```java
+
+```
+<!--END_DOCUSAURUS_CODE_TABS-->
+
+### 3.接口对接开发
+**excel 转 json**
+**接口对接样例**
+<!--DOCUSAURUS_CODE_TABS-->
+<!--Java-->
+```java
+ExcelToJsonProperty property = new ExcelToJsonProperty();
+        property.setFile(multipartFile);
+        String json = "{\n" +
+                "\"school\":\n" +
+                " {\n" +
+                "   \"schoolName\":\"${学校}\",\n" +
+                "   \"student\":\n" +
+                "    {\n" +
+                "     \"studentName\":\"${学生姓名}\",\n" +
+                "     \"studentAge\":\"${学生年龄}\"\n" +
+                "    }\n" +
+                " }\n" +
+                "}";
+        property.setJson(json);
+//        property.setStartRow(1);
+//        property.setStartSheet(1);
+
+        String datas = ExcelConvertUtil.excelToJson(property);
+        notEmpty(datas,"convert excel fail!");
+        notNull(datas,"convert excel fail!");
+```
+<!--END_DOCUSAURUS_CODE_TABS-->
+
+**json 转 Excel**
+**接口对接样例**
+<!--DOCUSAURUS_CODE_TABS-->
+<!--Java-->
+```java
+1、传入模版文件转换：
+File pdf_template;
+
+Map<String ,String> map = Maps.newHashMap();
+map.put("${key1}","小白");
+map.put("${key2}","社会大学");
+map.put("${key3}","15112345678");
+map.put("${key4}","哈哈哈哈");
+
+2、传入输入流：
+FileInputStream inputStream ；
+
+Map<String ,String> map = Maps.newHashMap();
+map.put("${key1}","小白");
+map.put("${key2}","社会大学");
+map.put("${key3}","15112345678");
+map.put("${key4}","哈哈哈哈");
+
+String pdfName;
+
+3、使用维护好的模版转换：
+Long tenantId;
+
+String templateCode;//维护好的模版的code
+
+Map<String ,String> map = Maps.newHashMap();
+map.put("${key1}","小白");
+map.put("${key2}","社会大学");
+map.put("${key3}","15112345678");
+map.put("${key4}","哈哈哈哈");
+
+String pdfName;
+```
+<!--END_DOCUSAURUS_CODE_TABS-->
+
+
+
+
+### 返回码清单
+待补充
+
+
+## 压测报告
+
+待补充
+
+## 联调环境
+
+## 参考资料
+[《数据转换服务PRD》](https://wiki.xforceplus.com/pages/viewpage.action?pageId=33464138)
+[《数据转换服务ERD》](https://wiki.xforceplus.com/pages/viewpage.action?pageId=33464138)
+
+
+## 联系方式
+tower@xforceplus.com

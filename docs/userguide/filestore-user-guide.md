@@ -1,0 +1,221 @@
+# 文件存储用户手册
+
+## 引言
+
+### 编写目的
+
+为文件传输服务接入方开发人员提供一个规范化的接口协议，更方便地进行业务整合嵌入。
+### 背景
+
+本协议适用于文件存储服务与第三方接入平台间的行为、数据及事件的交互与传递。 本协议承载于 HTTP 协议，严格遵守 HTTP 协议规范。
+### 定义
+
+## 概述
+文件存储服务提供文件上传，下载，生成水印，缩略图等功能
+## 产品简介 
+
+### 什么是文件存储服务
+
+提供统一的文件管理功能，可扩展使用不同的存储源存储源
+
+### 产品优势
+
++ 统一化的文件存储服务功能接口
++ 单Pod支持最少1000并发量
++ 支持按使用量弹性伸缩扩展
++ 按量付费，并提供折扣价套餐
+
+### 产品功能
+主要功能支持各行业线存储任意格式的文件，支持多种文件存储类型，支持对文件进行加密、以及数据处理的能力。
+
++ 文件上传
++ 文件下载
++ 生成文件缩略图
++ 生成文件水印
+
+## 产品定价
+
+### 计费方式
+
+| 产品 | 存储类型 |定价维度|标准|归档| 
+|  :----  | :----  |:----  |:----  |:----  |
+| 文件存储服务| public |GB |0.15元/GB |0.05元/GB |
+| 文件存储服务 | private |GB |0.25元/GB| 0.10元/GB|
+|文件存储服务| 说明|  |  | 因不同级别的存储类型耗费成本不一致，所以每GB存储成本不一致；|
+
+### 赔付方案
+
+如服务可用性低于98%，可按照下表中的标准获得赔偿，且赔偿总额不超过在未达到服务可用性承诺期间内的客户实际支付的服务费。
+赔偿的服务费作为一下计费周期的费用抵扣。
+
+|  服务可用性  | 赔偿金额 | 
+|  :----  | :----  |
+| 低于99%但等于或高于98%  | 10%|
+| 低于98%但高于或等于95% | 20% |
+| 低于95% | 30% |
+
+## 接口清单
+使用SDK访问，不涉及直接调用接口
+
+## 接入步骤
+### 1.Jar包引入
+
+<!--DOCUSAURUS_CODE_TABS-->
+<!--pom-->
+```pom
+<dependency>
+            <artifactId>tower-sdk-storage</artifactId>
+            <groupId>com.xforceplus.tower</groupId>
+            <version>1.0.3-SNAPSHOT</version>
+</dependency>
+```
+<!--END_DOCUSAURUS_CODE_TABS-->
+
+### 2.创建客户端
+启动类添加
+
+    @EnableFileService
+
+配置文件添加
+
+内网：file-transfer-service=file-transfer-service
+
+外网fat环境：file-transfer-service=file-transfer-fat-svc.phoenix-t.xforceplus.com
+
+如果项目与sdk的springboot版本不同，可能会报错，配置文件添加
+
+spring.main.allow-bean-definition-overriding=true
+即可
+
+接口说明: 
+
+默认为OSS，若要使用MINO，需要在服务端的File_Channel表中添加相关数据
+
+**注意：若是使用方项目中引入的parent中含有oss，且其版本号较sdk低，此时建议使用方自己在项目中引入与sdk相同版本的oss
+防止方式依赖传递导致的版本错误**
+
+### 3.接口对接开发
+
+#### 上传文件
+
+**请求参数构造样例**
+
+<!--DOCUSAURUS_CODE_TABS-->
+<!--Java-->
+```java
+@Autowired
+private StorageFactory storageFactory;
+
+storageFactory.uploadFile(xxx)
+UploadFileRequest uploadFileRequest = new UploadFileRequest();
+uploadFileRequest.setAppId("file-transfer");
+uploadFileRequest.setExpires(100);
+uploadFileRequest.setFile(multipartFile);
+uploadFileRequest.setPolicy(policy);
+uploadFileRequest.setTenantId(123457L);
+uploadFileRequest.setUserId(13012341234L);
+uploadFileRequest.setOverwrite(true);
+uploadFileRequest.setFilePath("/xx/");
+uploadFileRequest.setWaterMarkRequest(xxx); 
+
+WaterMarkRequest:
+/**文字水印内容,支持汉字最多20个左右*/
+@NotNull
+private String  textWaterMark;
+/**表示文字水印的文字类型(必须编码) 默认值：wqy-zenhei */
+private TextType type;
+/**文字水印的文字的颜色 默认值：000000黑色*/
+private String  color;
+/**文字水印的文字大小(px) 取值范围：(0，1000]  默认值：40*/
+private String  size;
+/**文字水印的阴影透明度 取值范围：[0,100]*/
+private String  shadow;
+/**文字顺时针旋转角度 取值范围：[0,360]*/
+private String  rotate;
+/**进行水印铺满的效果 取值范围：[0,1]，1表示铺满，0表示效果无效*/
+private String  fill;
+```
+<!--END_DOCUSAURUS_CODE_TABS-->
+
+**响应参数解析样例**
+
+    Long fileId
+
+---
+
+#### 下载文件
+
+**请求参数构造样例**
+<!--DOCUSAURUS_CODE_TABS-->
+<!--Java-->
+```java
+MockHttpServletResponse response = new MockHttpServletResponse()
+Long userId
+Long tenantId
+Long fileId
+String fileName
+```
+<!--END_DOCUSAURUS_CODE_TABS-->
+
+**响应参数解析样例**
+
+    待补充 
+
+**公共文件url**
+
+**请求参数构造样例**
+<!--DOCUSAURUS_CODE_TABS-->
+<!--Java-->
+```java
+String getPublicFileUrl(Long userId, Long tenantId, Long fileId)
+userId 用户id 必传
+tenantId 租户id 必传
+fileId 文件id 必传
+```
+<!--END_DOCUSAURUS_CODE_TABS-->
+
+**响应参数解析样例**
+
+    String url
+
+**文件缩略图下载**
+
+**请求参数构造样例**
+<!--DOCUSAURUS_CODE_TABS-->
+<!--Java-->
+```java
+response 必传
+userId 用户id 必传
+tenantId 租户id 必传
+fileId 文件id 必传
+height 缩略图高度
+width 缩略图宽度
+```
+<!--END_DOCUSAURUS_CODE_TABS-->
+
+**响应参数解析样例**
+    
+    待补充
+
+### 返回码清单
+原有接口
+
+|  code  | message | 描述 | 
+|  :----  | :----  |:----|
+|ELCCZZ0500| 系统处理异常 | 往往会附带更多信息，重试多次后无法解决请联系管理员 |
+| ELCCZZ0200 | 请求成功 | 附加返回参数请参看result内容 |
+|ELCCZZ0400|请求参数错误|请求参数校验失败，请按提示修改后重新提交|
+
+## 压测报告
+
+[《文件服务MINIO压测》](https://wiki.xforceplus.com/pages/viewpage.action?pageId=33476142)
+[《文件服务接口功能压测迭代20190717》](https://wiki.xforceplus.com/pages/viewpage.action?pageId=33468432)
+[《迭代20190628文件服务接口功能测试设计》](https://wiki.xforceplus.com/pages/viewpage.action?pageId=33461512)
+
+## 联调环境
+
+详见[《服务下沉环境信息》](https://wiki.xforceplus.com/pages/viewpage.action?pageId=30025683)中FAT环境配置
+
+
+## 联系方式
+tower@xforceplus.com

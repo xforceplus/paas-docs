@@ -1,0 +1,782 @@
+# 消息中心接口样式
+
+
+<a name="overview"></a>
+## 概览
+lengmz
+
+
+### 版本信息
+*版本* : 1.0.0
+
+
+### URI scheme
+*域名* : message-center-fat-svc.phoenix-t.xforceplus.com  
+*基础路径* : /
+
+
+### 标签
+
+* 短信消息API : Sms Message Controller
+* 短信管理API : Sms Management Controller
+* 短信验证码API : Sms Auth Code Controller
+* 邮件发送API : Email Content Controller
+* 邮件模板API : Email Template Controller
+* 邮件管理API : Email Management Controller
+* 邮件验证码API : Email Auth Code Controller
+
+
+
+
+<a name="paths"></a>
+## 路径
+
+<a name="querysendresultusingget"></a>
+### 查询邮件发送结果列表
+```
+GET /{tenantId}/message-management/v1/email
+```
+
+
+#### 说明
+返回邮件发送结果列表
+
+
+#### 参数
+
+|类型|名称|说明|类型|
+|---|---|---|---|
+|**Path**|**tenantId**  <br>*必填*|租户id|string|
+|**Query**|**account**  <br>*可选*|邮箱账号|string|
+|**Query**|**id**  <br>*可选*|ID|string|
+|**Query**|**page**  <br>*必填*|页码，从1开始|string|
+|**Query**|**size**  <br>*必填*|每页数量，不能超过200|string|
+
+
+#### 响应
+
+|HTTP代码|说明|类型|
+|---|---|---|
+|**200**|OK|[DefaultResponse](#defaultresponse)|
+|**401**|Unauthorized|无内容|
+|**403**|Forbidden|无内容|
+|**404**|Not Found|无内容|
+
+
+#### 生成
+
+* `application/json;charset=UTF-8`
+
+
+#### 标签
+
+* 邮件管理API
+
+
+<a name="resendusingpost"></a>
+### 重发邮件
+```
+POST /{tenantId}/message-management/v1/email/again
+```
+
+
+#### 参数
+
+|类型|名称|说明|类型|
+|---|---|---|---|
+|**Path**|**tenantId**  <br>*必填*|tenantId|string|
+|**Query**|**id**  <br>*可选*|重发ID|integer (int64)|
+
+
+#### 响应
+
+|HTTP代码|说明|类型|
+|---|---|---|
+|**200**|OK|[BaseStatus](#basestatus)|
+|**201**|Created|无内容|
+|**401**|Unauthorized|无内容|
+|**403**|Forbidden|无内容|
+|**404**|Not Found|无内容|
+
+
+#### 消耗
+
+* `application/json`
+
+
+#### 生成
+
+* `\*/*`
+
+
+#### 标签
+
+* 邮件管理API
+
+
+<a name="queryemailbyidusingget"></a>
+### 根据id查询邮件
+```
+GET /{tenantId}/message-management/v1/email/one
+```
+
+
+#### 说明
+返回邮件
+
+
+#### 参数
+
+|类型|名称|说明|类型|
+|---|---|---|---|
+|**Path**|**tenantId**  <br>*必填*|租户id|string|
+|**Query**|**id**  <br>*可选*|ID|string|
+
+
+#### 响应
+
+|HTTP代码|说明|类型|
+|---|---|---|
+|**200**|OK|[DefaultResponse](#defaultresponse)|
+|**401**|Unauthorized|无内容|
+|**403**|Forbidden|无内容|
+|**404**|Not Found|无内容|
+
+
+#### 生成
+
+* `application/json;charset=UTF-8`
+
+
+#### 标签
+
+* 邮件管理API
+
+
+<a name="savetemplateusingpost"></a>
+### 保存邮件模板
+```
+POST /{tenantId}/message-management/v1/email/template
+```
+
+
+#### 参数
+
+|类型|名称|说明|类型|
+|---|---|---|---|
+|**Path**|**tenantId**  <br>*必填*|tenantId|string|
+|**Body**|**emailTemplateReq**  <br>*必填*|邮件模板|[EmailTemplateReq](#emailtemplatereq)|
+
+
+#### 响应
+
+|HTTP代码|说明|类型|
+|---|---|---|
+|**200**|OK|[DefaultResponse](#defaultresponse)|
+|**201**|Created|无内容|
+|**401**|Unauthorized|无内容|
+|**403**|Forbidden|无内容|
+|**404**|Not Found|无内容|
+
+
+#### 消耗
+
+* `application/json`
+
+
+#### 生成
+
+* `\*/*`
+
+
+#### 标签
+
+* 邮件模板API
+
+
+<a name="querytemplatebyidusingget"></a>
+### 根据Id查询邮件模板
+```
+GET /{tenantId}/message-management/v1/email/template
+```
+
+
+#### 参数
+
+|类型|名称|说明|类型|
+|---|---|---|---|
+|**Path**|**tenantId**  <br>*必填*|tenantId|string|
+|**Query**|**id**  <br>*必填*|模板id|integer (int64)|
+
+
+#### 响应
+
+|HTTP代码|说明|类型|
+|---|---|---|
+|**200**|OK|[DefaultResponse](#defaultresponse)|
+|**401**|Unauthorized|无内容|
+|**403**|Forbidden|无内容|
+|**404**|Not Found|无内容|
+
+
+#### 生成
+
+* `\*/*`
+
+
+#### 标签
+
+* 邮件模板API
+
+
+<a name="deletetemplatebyidusingdelete"></a>
+### 根据Id删除邮件模板
+```
+DELETE /{tenantId}/message-management/v1/email/template
+```
+
+
+#### 参数
+
+|类型|名称|说明|类型|
+|---|---|---|---|
+|**Path**|**tenantId**  <br>*必填*|tenantId|string|
+|**Query**|**id**  <br>*必填*|邮件模板id|integer (int64)|
+
+
+#### 响应
+
+|HTTP代码|说明|类型|
+|---|---|---|
+|**200**|OK|[DefaultResponse](#defaultresponse)|
+|**204**|No Content|无内容|
+|**401**|Unauthorized|无内容|
+|**403**|Forbidden|无内容|
+
+
+#### 生成
+
+* `\*/*`
+
+
+#### 标签
+
+* 邮件模板API
+
+
+<a name="pagequerytemplatelistbyappidusingget"></a>
+### 分页查询邮件模板列表
+```
+GET /{tenantId}/message-management/v1/email/template/page-list
+```
+
+
+#### 参数
+
+|类型|名称|说明|类型|
+|---|---|---|---|
+|**Path**|**tenantId**  <br>*必填*|tenantId|string|
+|**Query**|**appId**  <br>*必填*|产品线Id|integer (int64)|
+|**Query**|**page**  <br>*必填*|页码，从1开始|integer (int32)|
+|**Query**|**size**  <br>*必填*|每页数量，不能超过200|integer (int32)|
+|**Query**|**templateCode**  <br>*可选*|模板代码|string|
+|**Query**|**templateName**  <br>*可选*|模板名称|string|
+|**Query**|**templateType**  <br>*可选*|模板类型|integer (int32)|
+
+
+#### 响应
+
+|HTTP代码|说明|类型|
+|---|---|---|
+|**200**|OK|[DefaultResponse](#defaultresponse)|
+|**401**|Unauthorized|无内容|
+|**403**|Forbidden|无内容|
+|**404**|Not Found|无内容|
+
+
+#### 生成
+
+* `\*/*`
+
+
+#### 标签
+
+* 邮件模板API
+
+
+<a name="querysendresultusingget_1"></a>
+### 查询短信发送结果列表
+```
+GET /{tenantId}/message-management/v1/sms
+```
+
+
+#### 说明
+返回短信发送结果列表
+
+
+#### 参数
+
+|类型|名称|说明|类型|
+|---|---|---|---|
+|**Path**|**tenantId**  <br>*必填*|租户id|string|
+|**Query**|**id**  <br>*可选*|ID|string|
+|**Query**|**page**  <br>*必填*|页码，从1开始|string|
+|**Query**|**phoneNo**  <br>*可选*|手机号|string|
+|**Query**|**size**  <br>*必填*|每页数量，不能超过200|string|
+
+
+#### 响应
+
+|HTTP代码|说明|类型|
+|---|---|---|
+|**200**|OK|[DefaultResponse](#defaultresponse)|
+|**401**|Unauthorized|无内容|
+|**403**|Forbidden|无内容|
+|**404**|Not Found|无内容|
+
+
+#### 生成
+
+* `application/json;charset=UTF-8`
+
+
+#### 标签
+
+* 短信管理API
+
+
+<a name="resendusingpost"></a>
+### 重新发送短信
+```
+POST /{tenantId}/message-management/v1/sms/again
+```
+
+
+#### 参数
+
+|类型|名称|说明|类型|
+|---|---|---|---|
+|**Path**|**tenantId**  <br>*必填*|tenantId|string|
+|**Query**|**id**  <br>*必填*|消息ID|integer (int64)|
+
+
+#### 响应
+
+|HTTP代码|说明|类型|
+|---|---|---|
+|**200**|OK|[AuthCodeResp](#authcoderesp)|
+|**201**|Created|无内容|
+|**401**|Unauthorized|无内容|
+|**403**|Forbidden|无内容|
+|**404**|Not Found|无内容|
+
+
+#### 消耗
+
+* `application/json`
+
+
+#### 生成
+
+* `application/json;charset=UTF-8`
+
+
+#### 标签
+
+* 短信管理API
+
+
+<a name="sendusingpost"></a>
+### 发送邮件
+```
+POST /{tenantId}/message/v1/email
+```
+
+
+#### 参数
+
+|类型|名称|说明|类型|
+|---|---|---|---|
+|**Path**|**tenantId**  <br>*必填*|tenantId|string|
+|**Body**|**emailContentReq**  <br>*可选*|发送邮件参数|[EmailContentReq](#emailcontentreq)|
+
+
+#### 响应
+
+|HTTP代码|说明|类型|
+|---|---|---|
+|**200**|OK|[BaseStatus](#basestatus)|
+|**201**|Created|无内容|
+|**401**|Unauthorized|无内容|
+|**403**|Forbidden|无内容|
+|**404**|Not Found|无内容|
+
+
+#### 消耗
+
+* `application/json`
+
+
+#### 生成
+
+* `\*/*`
+
+
+#### 标签
+
+* 邮件发送API
+
+
+<a name="sendauthcodeusingpost"></a>
+### 发送验证码
+```
+POST /{tenantId}/message/v1/email/auth-code
+```
+
+
+#### 参数
+
+|类型|名称|说明|类型|
+|---|---|---|---|
+|**Path**|**tenantId**  <br>*必填*|tenantId|string|
+|**Body**|**emailAuthCodeReq**  <br>*必填*|发送验证码参数|[EmailAuthCodeReq](#emailauthcodereq)|
+
+
+#### 响应
+
+|HTTP代码|说明|类型|
+|---|---|---|
+|**200**|OK|[AuthCodeResp](#authcoderesp)|
+|**201**|Created|无内容|
+|**401**|Unauthorized|无内容|
+|**403**|Forbidden|无内容|
+|**404**|Not Found|无内容|
+
+
+#### 消耗
+
+* `application/json`
+
+
+#### 生成
+
+* `\*/*`
+
+
+#### 标签
+
+* 邮件验证码API
+
+
+<a name="validateusingpost"></a>
+### 校验验证码
+```
+POST /{tenantId}/message/v1/email/auth-code/verification
+```
+
+
+#### 参数
+
+|类型|名称|说明|类型|
+|---|---|---|---|
+|**Path**|**tenantId**  <br>*必填*|tenantId|string|
+|**Body**|**emailValidateReq**  <br>*必填*|校验验证码参数|[EmailValidateReq](#emailvalidatereq)|
+
+
+#### 响应
+
+|HTTP代码|说明|类型|
+|---|---|---|
+|**200**|OK|[SmsValidateResp](#smsvalidateresp)|
+|**201**|Created|无内容|
+|**401**|Unauthorized|无内容|
+|**403**|Forbidden|无内容|
+|**404**|Not Found|无内容|
+
+
+#### 消耗
+
+* `application/json`
+
+
+#### 生成
+
+* `\*/*`
+
+
+#### 标签
+
+* 邮件验证码API
+
+
+<a name="sendusingpost_1"></a>
+### 发送短信
+```
+POST /{tenantId}/message/v1/sms
+```
+
+
+#### 参数
+
+|类型|名称|说明|类型|
+|---|---|---|---|
+|**Path**|**tenantId**  <br>*必填*|tenantId|string|
+|**Body**|**smsMessageReq**  <br>*必填*|smsMessageReq|[SmsMessageReq](#smsmessagereq)|
+
+
+#### 响应
+
+|HTTP代码|说明|类型|
+|---|---|---|
+|**200**|OK|[BaseStatus](#basestatus)|
+|**201**|Created|无内容|
+|**401**|Unauthorized|无内容|
+|**403**|Forbidden|无内容|
+|**404**|Not Found|无内容|
+
+
+#### 消耗
+
+* `application/json`
+
+
+#### 生成
+
+* `\*/*`
+
+
+#### 标签
+
+* 短信消息API
+
+
+<a name="sendauthcodeusingpost_1"></a>
+### 发送短信验证码
+```
+POST /{tenantId}/message/v1/sms/auth-code
+```
+
+
+#### 参数
+
+|类型|名称|说明|类型|
+|---|---|---|---|
+|**Path**|**tenantId**  <br>*必填*|tenantId|string|
+|**Body**|**smsCodeReq**  <br>*必填*|smsCodeReq|[SmsCodeReq](#smscodereq)|
+
+
+#### 响应
+
+|HTTP代码|说明|类型|
+|---|---|---|
+|**200**|OK|[AuthCodeResp](#authcoderesp)|
+|**201**|Created|无内容|
+|**401**|Unauthorized|无内容|
+|**403**|Forbidden|无内容|
+|**404**|Not Found|无内容|
+
+
+#### 消耗
+
+* `application/json`
+
+
+#### 生成
+
+* `\*/*`
+
+
+#### 标签
+
+* 短信验证码API
+
+
+<a name="validateusingpost_1"></a>
+### 校验短信验证码
+```
+POST /{tenantId}/message/v1/sms/auth-code/verification
+```
+
+
+#### 参数
+
+|类型|名称|说明|类型|
+|---|---|---|---|
+|**Path**|**tenantId**  <br>*必填*|tenantId|string|
+|**Body**|**smsValidReq**  <br>*必填*|smsValidReq|[SmsValidateReq](#smsvalidatereq)|
+
+
+#### 响应
+
+|HTTP代码|说明|类型|
+|---|---|---|
+|**200**|OK|[SmsValidateResp](#smsvalidateresp)|
+|**201**|Created|无内容|
+|**401**|Unauthorized|无内容|
+|**403**|Forbidden|无内容|
+|**404**|Not Found|无内容|
+
+
+#### 消耗
+
+* `application/json`
+
+
+#### 生成
+
+* `\*/*`
+
+
+#### 标签
+
+* 短信验证码API
+
+
+
+
+<a name="definitions"></a>
+## 定义
+
+<a name="authcoderesp"></a>
+### AuthCodeResp
+
+|名称|说明|类型|
+|---|---|---|
+|**code**  <br>*可选*|状态  <br>**样例** : `1`|integer (int32)|
+|**desc**  <br>*可选*|描述  <br>**样例** : `"成功"`|string|
+|**msgId**  <br>*可选*||string|
+
+
+<a name="basestatus"></a>
+### BaseStatus
+
+|名称|说明|类型|
+|---|---|---|
+|**code**  <br>*可选*|状态  <br>**样例** : `1`|integer (int32)|
+|**desc**  <br>*可选*|描述  <br>**样例** : `"成功"`|string|
+
+
+<a name="defaultresponse"></a>
+### DefaultResponse
+
+|名称|说明|类型|
+|---|---|---|
+|**code**  <br>*可选*|状态码  <br>**样例** : `"MSGCZZ0200"`|string|
+|**message**  <br>*可选*|状态描述  <br>**样例** : `"请求成功"`|string|
+|**result**  <br>*可选*|返回数据|object|
+
+
+<a name="emailattachment"></a>
+### EmailAttachment
+
+|名称|说明|类型|
+|---|---|---|
+|**displayName**  <br>*可选*|附件名称  <br>**样例** : `"附件名称"`|string|
+|**fileUrl**  <br>*可选*|附件路径  <br>**样例** : `"http://xxx.jpg"`|string|
+
+
+<a name="emailauthcodereq"></a>
+### EmailAuthCodeReq
+
+|名称|说明|类型|
+|---|---|---|
+|**appId**  <br>*可选*|产品线Id|integer (int64)|
+|**email**  <br>*可选*|邮箱账号  <br>**样例** : `"lengmingzh@sina.com"`|string|
+|**expireTime**  <br>*可选*|过期时间(分)，传值范围是1-30  <br>**样例** : `3`|integer (int32)|
+|**extno**  <br>*可选*|扩展参数  <br>**样例** : `"extno"`|string|
+|**templateCode**  <br>*可选*|模板code|string|
+|**tenantId**  <br>*可选*|租户ID  <br>**样例** : `11112222`|integer (int64)|
+
+
+<a name="emailcontentreq"></a>
+### EmailContentReq
+
+|名称|说明|类型|
+|---|---|---|
+|**appId**  <br>*可选*|产品线Id|integer (int64)|
+|**attachments**  <br>*可选*|附件列表|< [EmailAttachment](#emailattachment) > array|
+|**content**  <br>*可选*|邮件内容  <br>**样例** : `"测试内容"`|string|
+|**email**  <br>*可选*|邮箱账号  <br>**样例** : `"yours@sina.com"`|string|
+|**id**  <br>*可选*|邮件id-重发用|integer (int64)|
+|**props**  <br>*可选*|模板参数键值对|< string, string > map|
+|**senderName**  <br>*可选*|发件人名称|string|
+|**subject**  <br>*可选*|邮件主题  <br>**样例** : `"票易通验证码"`|string|
+|**templateCode**  <br>*可选*|模板code|string|
+|**tenantId**  <br>*可选*|租户id|integer (int64)|
+
+
+<a name="emailtemplatereq"></a>
+### EmailTemplateReq
+
+|名称|说明|类型|
+|---|---|---|
+|**appId**  <br>*可选*|产品线Id|integer (int64)|
+|**id**  <br>*可选*|模板id|integer (int64)|
+|**senderName**  <br>*可选*|模板内容|string|
+|**subject**  <br>*可选*|邮件标题|string|
+|**templateCode**  <br>*可选*|模板code|string|
+|**templateContent**  <br>*可选*|发送人名称|string|
+|**templateName**  <br>*可选*|模板名称|string|
+|**templateType**  <br>*可选*|模板类型|integer (int32)|
+
+
+<a name="emailvalidatereq"></a>
+### EmailValidateReq
+
+|名称|说明|类型|
+|---|---|---|
+|**code**  <br>*可选*|验证码  <br>**样例** : `"123456"`|string|
+|**email**  <br>*可选*|邮箱账号  <br>**样例** : `"1831716675"`|string|
+|**msgId**  <br>*可选*|消息ID  <br>**样例** : `"a1111111111"`|string|
+
+
+<a name="smscodereq"></a>
+### SmsCodeReq
+
+|名称|说明|类型|
+|---|---|---|
+|**expireTime**  <br>*可选*|过期时间(分)，传值范围是1-30  <br>**样例** : `3`|integer (int32)|
+|**extno**  <br>*可选*|扩展参数  <br>**样例** : `"extno"`|string|
+|**mobile**  <br>*可选*|用户账号  <br>**样例** : `"1831716675"`|string|
+|**signName**  <br>*可选*|签名  <br>**样例** : `"票易通"`|string|
+|**templateCode**  <br>*可选*|模板code  <br>**样例** : `"123456"`|string|
+|**tenantId**  <br>*可选*|租户ID  <br>**样例** : `11112222`|integer (int64)|
+
+
+<a name="smsmessagereq"></a>
+### SmsMessageReq
+
+|名称|说明|类型|
+|---|---|---|
+|**extno**  <br>*可选*|扩展参数  <br>**样例** : `"extno"`|string|
+|**mobile**  <br>*可选*|用户账号  <br>**样例** : `"1831716675"`|string|
+|**signName**  <br>*可选*|签名  <br>**样例** : `"票易通"`|string|
+|**templateCode**  <br>*可选*|模板code  <br>**样例** : `"123456"`|string|
+|**templateParamJson**  <br>*可选*|模板参数json  <br>**样例** : `"json"`|string|
+|**tenantId**  <br>*可选*|租户ID  <br>**样例** : `11112222`|integer (int64)|
+
+
+<a name="smsvalidatereq"></a>
+### SmsValidateReq
+
+|名称|说明|类型|
+|---|---|---|
+|**code**  <br>*可选*|验证码  <br>**样例** : `"123456"`|string|
+|**mobile**  <br>*可选*|手机号码  <br>**样例** : `"1831716675"`|string|
+|**msgId**  <br>*可选*|消息ID  <br>**样例** : `"a1111111111"`|string|
+
+
+<a name="smsvalidateresp"></a>
+### SmsValidateResp
+
+|名称|说明|类型|
+|---|---|---|
+|**check**  <br>*可选*||boolean|
+|**code**  <br>*可选*|状态  <br>**样例** : `1`|integer (int32)|
+|**desc**  <br>*可选*|描述  <br>**样例** : `"成功"`|string|
+
+
+
+
+

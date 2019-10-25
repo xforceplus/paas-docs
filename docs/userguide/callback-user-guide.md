@@ -1,0 +1,136 @@
+# 回调服务用户手册
+
+## 引言
+
+### 编写目的
+
+为回调服务接入方开发人员提供一个规范化的接口协议，更方便地进行业务整合嵌入。
+### 背景
+
+本协议适用于回调服务与第三方接入平台间的行为、数据及事件的交互与传递。 本协议承载于 HTTP 协议，严格遵守 HTTP 协议规范。
+### 定义
+
+## 概述
+ 
+待补充
+
+## 产品简介 
+
+### 什么是回调服务
+
+回调服务是由服务下沉团队提供的将消息回调、报文处理、回调补偿、消息回执整合的一体化消息服务。
+提供了HTTP、HTTPS、邮件、短信等多种方式的回调消息传输方式。
+
+### 产品优势
+
++ 统一多种回调方式
++ 报文处理可扩展
++ 高可用，支持自动横向扩展，可用率可达99.999%
++ 完善的失败补偿机制，保证回调消息到达率
++ 回调请求审计，历史数据可追溯
+
+### 产品功能
+
++ 支持HTTP、HTTPS、邮件、短信多种回调消息传输方式
++ 支持报文处理：Json key值 转换、剪切（黑白名单）
++ 回调失败请求自动补偿
++ 回调失败手动补偿
++ 支持租户隔离
+
+## 产品定价
+
+### 计费方式
+|  服务可用性  | 产品类型 | 定价维度 | 定价 |
+|  :----  | :----  |:----  |:----  |
+| 回调服务  | HTTP/HTTPS | 单价 | 0.001元/条；报文处理+0.002/条 |
+| 回调服务  | HTTP/HTTPS | 套餐 | 10,000元/11,111,111条(9折) |
+| 回调服务  | 邮箱 | 单价 | 原有HTTP基础上 +0.002元/条|
+| 回调服务  | 说明 | 单价 | 提供测试环境免费试用，短信及邮件共提供100条试用，超过则按照计费标准收费；计费原则：发送成功则计费，发送失败不计费；所有套餐包时长为6个月。超出6个月之后按照单价计费。|
+
+### 赔付方案
+
+如服务可用性低于98%，可按照下表中的标准获得赔偿，且赔偿总额不超过在未达到服务可用性承诺期间内的客户实际支付的服务费。
+赔偿的服务费作为一下计费周期的费用抵扣。
+
+|  服务可用性  | 赔偿金额 | 
+|  :----  | :----  |
+| 低于99%但等于或高于98%  | 10%|
+| 低于98%但高于或等于95% | 20% |
+| 低于95% | 30% |
+
+## 接口清单
+
+请访问 http://172.18.10.212:3000/ 并注册，通知管理员（tower@xforceplus.com）授予权限即可见。
+
+提交回调请求接口请参考 http://172.18.10.212:3000/project/116/interface/api
+
+回调注册及配置接口请参考 http://172.18.10.212:3000/project/119/interface/api
+
+## 接入步骤
+
+### 1.Jar包引入
+<!--DOCUSAURUS_CODE_TABS-->
+<!--pom-->
+```pom
+<dependency>
+  <groupId>com.xforceplus</groupId>
+  <artifactId>callback-sdk</artifactId>
+  <version>1.0-SNAPSHOT</version>
+</dependency>
+```
+<!--END_DOCUSAURUS_CODE_TABS-->
+
+### 2.创建客户端（以FeignClient为例）
+<!--DOCUSAURUS_CODE_TABS-->
+<!--Java-->
+```java
+@Autowire
+private CallbackApiClient client
+```
+<!--END_DOCUSAURUS_CODE_TABS-->
+
+### 3.接口对接开发
+##### 开启回调
+client.cooperation(CooperationParams,tenantId)
+<!--DOCUSAURUS_CODE_TABS-->
+<!--yml-->
+```yml
+CooperationParams:
+String content :内容
+CooperationProperties：
+  rule:规则
+  appKey: 应用的appId
+  CooperationPropertiesExtParam：
+	String subject = null;
+	String attachment = null;
+	String destination = null;
+```
+<!--END_DOCUSAURUS_CODE_TABS-->
+
+##### 响应返回值
+<!--DOCUSAURUS_CODE_TABS-->
+<!--Java-->
+```java
+private String code;
+private ResponseBody result;
+private String message;
+```
+<!--END_DOCUSAURUS_CODE_TABS-->
+
+
+### 返回码清单
+|  code  | message | 描述 | 
+|  :----  | :----  |:----|
+|CPTNCB1001| 请求失败 | 附加返回值查看result |
+| CPTNCB0001 | 请求成功 | 附加返回值查看result |
+
+
+## 压测报告
+待补充
+
+## 联调环境
+
+详见[《服务下沉环境信息》](https://wiki.xforceplus.com/pages/viewpage.action?pageId=30025683)中FAT环境配置
+
+## 联系方式
+tower@xforceplus.com
