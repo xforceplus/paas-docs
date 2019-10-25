@@ -1,0 +1,63 @@
+# Compiled class file
+*.class
+
+# Log file
+*.log
+
+# BlueJ files
+*.ctxt
+
+# Mobile Tools for Java (J2ME)
+.mtj.tmp/
+
+# Package Files #
+*.jar
+*.war
+*.nar
+*.ear
+*.zip
+*.tar.gz
+*.rar
+
+# virtual machine crash logs, see http://www.java.com/en/download/help/error_hotspot.xml
+hs_err_pid*
+
+# IDE working files
+*.iws
+*.ipr
+*.iml
+.idea/
+.settings
+.project
+.classpath
+
+# Build directories
+distrib/
+target/
+tmp/
+gen-external-apklibs/
+out/
+
+# Build & test droppings
+report.js
+report.xml
+chromedriver.log
+.scala_dependencies
+nexus.properties
+pom.xml.releaseBackup
+pom.xml.versionsBackup
+release.properties
+*.ser
+dependency-reduced-pom.xml
+*~
+libpeerconnection.log
+
+# OS generated files
+.DS_Store*
+ehthumbs.db
+Icon?
+Thumbs.db
+test-json-report.json
+testng/test-output/
+
+DONT_COMMIT_ME.java
