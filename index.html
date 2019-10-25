@@ -7,6 +7,7 @@
   <meta name="description" content="Description">
   <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
   <link rel="stylesheet" href="//unpkg.com/docsify/lib/themes/vue.css">
+  <link rel="stylesheet" href="//unpkg.com/gitalk/dist/gitalk.css">
 </head>
 <body>
   <div id="app"></div>
@@ -20,7 +21,21 @@
       loadSidebar: false,
       notFoundPage: true,
       homepage: 'docs/回调服务/回调服务用户手册.md',
+      auto2top: true,
     }
+  </script>
+  <script src="//unpkg.com/docsify/lib/plugins/gitalk.min.js"></script>
+  <script src="//unpkg.com/gitalk/dist/gitalk.min.js"></script>
+  <script>
+    const gitalk = new Gitalk({
+      clientID: '3b7a8e0cff590463462d',
+      clientSecret: 'f10dd7cc3046a00259caceb9d7daa0978bcf9aee',
+      repo: 'tower-cloud-docs',
+      owner: 'xforceplus',
+      admin: ['tcwmj'],
+      // facebook-like distraction free mode
+      distractionFreeMode: false
+    })
   </script>
   <script src="//unpkg.com/docsify/lib/docsify.min.js"></script>
   <script src="//unpkg.com/docsify/lib/plugins/search.min.js"></script>
